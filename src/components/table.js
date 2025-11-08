@@ -190,3 +190,21 @@ function renderRows() {
     tbody.append(tr);
   });
 }
+function openModal(idx) {
+  const todos = loadTodos();
+  const item = todos[idx];
+  if (!item) return;
+  const modal = document.getElementById("modal");
+  document.getElementById("taskName").value = item.name;
+  document.getElementById("priority").value = item.priority;
+  document.getElementById("status").value = item.status;
+  document.getElementById("deadline").value = item.deadline;
+  modal.classList.remove("hidden");
+}
+
+function deleteTodo(idx) {
+  const todos = loadTodos();
+  todos.splice(idx, 1);
+  saveTodos(todos);
+  renderRows();
+}
