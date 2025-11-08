@@ -13,3 +13,23 @@ export function loadTodos() {
     return [];
   }
 }
+export function saveTodos(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+export function initSampleIfEmpty() {
+  const todos = loadTodos();
+  if (todos.length === 0) {
+    const sample = [
+      {
+        name: "Walk the dog",
+        priority: "low",
+        status: "todo",
+        deadline: new Date().toISOString().slice(0, 10),
+      },
+    ];
+    saveTodos(sample);
+    return sample;
+  }
+  return todos;
+}
