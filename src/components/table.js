@@ -1,4 +1,4 @@
-import {El} from "./utils/el.js"
+// import {El} from "./utils/el.js"
 // FILE: components/table.js
 import { El } from "../utils/el.js";
 

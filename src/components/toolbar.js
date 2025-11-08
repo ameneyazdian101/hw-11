@@ -1,5 +1,5 @@
 // FILE: components/toolbar.js
-import { El } from "./utils/el.js";
+import { El } from "../utils/el.js";
 
 export function Header() {
   return El({
