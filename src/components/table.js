@@ -33,3 +33,42 @@ export function initSampleIfEmpty() {
   }
   return todos;
 }
+function getBadge(priority) {
+  const span = El({ element: "span", className: "badge px-2 py-1 rounded" });
+  if (priority === "low") {
+    span.style.background = "#e6e6e6";
+    span.style.color = "#333";
+    span.textContent = "Low";
+  }
+  if (priority === "medium") {
+    span.style.background = "#FFD54D";
+    span.style.color = "#000";
+    span.textContent = "Medium";
+  }
+  if (priority === "high") {
+    span.style.background = "#ef4444";
+    span.style.color = "#fff";
+    span.textContent = "High";
+  }
+  return span;
+}
+
+function getStatusBadge(status) {
+  const span = El({ element: "span", className: "badge px-2 py-1 rounded" });
+  if (status === "todo") {
+    span.style.background = "#ef4444";
+    span.style.color = "#fff";
+    span.textContent = "Todo";
+  }
+  if (status === "doing") {
+    span.style.background = "#FFD54D";
+    span.style.color = "#000";
+    span.textContent = "Doing";
+  }
+  if (status === "done") {
+    span.style.background = "#10b981";
+    span.style.color = "#fff";
+    span.textContent = "Done";
+  }
+  return span;
+}
