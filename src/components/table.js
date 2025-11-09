@@ -1,5 +1,3 @@
-// import {El} from "./utils/el.js"
-// FILE: components/table.js
 import { El } from "../utils/el.js";
 
 const STORAGE_KEY = "my_todos_v1";
@@ -13,18 +11,31 @@ export function loadTodos() {
     return [];
   }
 }
+
 export function saveTodos(arr) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
 }
 
 export function initSampleIfEmpty() {
   const todos = loadTodos();
-  if (todos.length === 0) {
+  if (todos.length < 3) {
     const sample = [
       {
         name: "Walk the dog",
         priority: "low",
         status: "todo",
+        deadline: new Date().toISOString().slice(0, 10),
+      },
+      {
+        name: "Walk the dog1",
+        priority: "medium",
+        status: "doing",
+        deadline: new Date().toISOString().slice(0, 10),
+      },
+      {
+        name: "Walk the dog2",
+        priority: "high",
+        status: "done",
         deadline: new Date().toISOString().slice(0, 10),
       },
     ];
@@ -33,20 +44,24 @@ export function initSampleIfEmpty() {
   }
   return todos;
 }
+
 function getBadge(priority) {
-  const span = El({ element: "span", className: "badge px-2 py-1 rounded" });
+  const span = El({
+    element: "span",
+    className: "badge px-3 py-1 rounded-3xl",
+  });
   if (priority === "low") {
-    span.style.background = "#e6e6e6";
+    span.style.background = "#ebebeb";
     span.style.color = "#333";
     span.textContent = "Low";
   }
   if (priority === "medium") {
-    span.style.background = "#FFD54D";
+    span.style.background = "#ffc107";
     span.style.color = "#000";
     span.textContent = "Medium";
   }
   if (priority === "high") {
-    span.style.background = "#ef4444";
+    span.style.background = "#dc3545";
     span.style.color = "#fff";
     span.textContent = "High";
   }
@@ -54,30 +69,34 @@ function getBadge(priority) {
 }
 
 function getStatusBadge(status) {
-  const span = El({ element: "span", className: "badge px-2 py-1 rounded" });
+  const span = El({
+    element: "span",
+    className: "badge px-3 py-1 rounded-3xl justify-center",
+  });
   if (status === "todo") {
-    span.style.background = "#ef4444";
+    span.style.background = "#dc3545";
     span.style.color = "#fff";
     span.textContent = "Todo";
   }
   if (status === "doing") {
-    span.style.background = "#FFD54D";
+    span.style.background = "#ffc107";
     span.style.color = "#000";
     span.textContent = "Doing";
   }
   if (status === "done") {
-    span.style.background = "#10b981";
+    span.style.background = "#2e7d32";
     span.style.color = "#fff";
     span.textContent = "Done";
   }
   return span;
 }
+
 export function renderTable(container) {
   container.innerHTML = "";
 
   const table = El({
     element: "table",
-    className: "min-w-full border border-gray-200",
+    className: "min-w-full border",
     children: [
       El({
         element: "thead",
@@ -119,6 +138,53 @@ export function renderTable(container) {
   });
 
   container.append(table);
+  // اضافه کردن بخش پایین جدول (pagination info)
+  const footer = El({
+    element: "div",
+    className:
+      "flex  gap-3 justify-end items-center text-sm text-gray-600 mt-3 px-2",
+    children: [
+      El({
+        element: "div",
+        children: [
+          El({
+            element: "span",
+            textContent: "Rows per page: ",
+          }),
+          El({
+            element: "select",
+            className:
+              "ml-1  border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-cyan-500",
+            children: [
+              El({ element: "option", value: "all", textContent: "All" }),
+              El({ element: "option", value: "5", textContent: "5" }),
+              El({ element: "option", value: "10", textContent: "10" }),
+            ],
+          }),
+        ],
+      }),
+      El({
+        element: "div",
+        className: "flex items-center gap-3",
+        children: [
+          El({ element: "span", textContent: "1–3 of 3" }),
+          El({
+            element: "button",
+            className:
+              "ml-4 gap-1 px-2 py-1  rounded hover:bg-gray-100 transition",
+            textContent: "<",
+          }),
+          El({
+            element: "button",
+            className: "ml-1 px-2 py-1  rounded hover:bg-gray-100 transition",
+            textContent: ">",
+          }),
+        ],
+      }),
+    ],
+  });
+
+  container.append(footer);
 
   renderRows();
 }
@@ -135,45 +201,36 @@ function renderRows() {
       El({ element: "td", className: "border px-6 py-4", textContent: t.name }),
       El({
         element: "td",
-        className: "border px-6 py-4",
+        className: "border px-6 py-4 text-center",
         children: [getBadge(t.priority)],
       }),
       El({
         element: "td",
-        className: "border px-6 py-4",
+        className: "border px-6 py-4 text-center",
         children: [getStatusBadge(t.status)],
       }),
       El({
         element: "td",
-        className: "border px-6 py-4",
-        textContent: t.deadline,
+        className: "border px-6 py-4 text-center",
+        // textContent: t.deadline,
+        children: [
+          El({
+            element: "span",
+            className: "px-2 py-1 rounded-3xl border-blue-400  border-2 ",
+            textContent: t.deadline,
+          }),
+        ],
       }),
       El({
         element: "td",
-        className: "border px-6 py-4 flex gap-2",
+        className: " px-6 py-4 flex gap-2 justify-center",
         children: [
           El({
             element: "button",
-            className: "p-2 rounded bg-gray-700 text-white",
-            title: "View",
-            innerHTML:
-              '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>',
-            eventListener: [{ event: "click", callback: () => openModal(idx) }],
-          }),
-          El({
-            element: "button",
-            className: "p-2 rounded bg-blue-600 text-white",
-            title: "Edit",
-            innerHTML:
-              '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5h6M4 7v10a2 2 0 002 2h8l6-6V7"></path></svg>',
-            eventListener: [{ event: "click", callback: () => openModal(idx) }],
-          }),
-          El({
-            element: "button",
-            className: "p-2 rounded bg-red-500 text-white",
+            className: "p-1 rounded bg-[#dc3545] text-white",
             title: "Delete",
             innerHTML:
-              '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"></path></svg>',
+              '<img src ="./public/delete-svgrepo-com (1).png" class="w-8 h-8">',
             eventListener: [
               {
                 event: "click",
@@ -183,6 +240,22 @@ function renderRows() {
               },
             ],
           }),
+          El({
+            element: "button",
+            className: "p-1 rounded bg-[#0d6efd] text-white",
+            title: "Edit",
+            innerHTML:
+              '<img src ="./public/edit-svgrepo-com.png" class="w-8 h-8">',
+            eventListener: [{ event: "click", callback: () => openModal(idx) }],
+          }),
+          El({
+            element: "button",
+            className: "p-1 rounded bg-[#6c757d] white",
+            title: "View",
+            innerHTML:
+              '<img src ="./public/communication-eye-interaction-interface-show-ui-svgrepo-com (2).png" class="w-8 h-8">',
+            eventListener: [{ event: "click", callback: () => openModal(idx) }],
+          }),
         ],
       })
     );
@@ -190,6 +263,7 @@ function renderRows() {
     tbody.append(tr);
   });
 }
+
 function openModal(idx) {
   const todos = loadTodos();
   const item = todos[idx];

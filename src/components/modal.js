@@ -1,5 +1,5 @@
 import { El } from "../utils/el.js";
-export function modal() {
+export function Modal() {
   return El({
     element: "div",
     id: "modal",
